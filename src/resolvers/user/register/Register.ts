@@ -1,27 +1,29 @@
-import {Arg, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Mutation, Query, Resolver, UseMiddleware} from "type-graphql";
 import bcrypt from "bcryptjs";
 
 import {User} from "../../../entities/User";
 import {RegisterInput} from "./RegisterInput";
+import {isAuth} from "../../../middlewares/isAuth";
 
 @Resolver()
 export class RegisterResolver {
-  @Query(() => String)
-  async hello() {
-    return "Hello World!";
-  }
+    @UseMiddleware(isAuth)
+    @Query(() => String)
+    async hello() {
+        return "Hello World!";
+    }
 
-  @Mutation(() => User)
-  async register(
-    @Arg("data") {email, firstName, lastName, password}: RegisterInput
-  ): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, 12);
+    @Mutation(() => User)
+    async register(
+        @Arg("data") {email, firstName, lastName, password}: RegisterInput
+    ): Promise<User> {
+        const hashedPassword = await bcrypt.hash(password, 12);
 
-    return await User.create({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-    }).save();
-  }
+        return await User.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+        }).save();
+    }
 }
