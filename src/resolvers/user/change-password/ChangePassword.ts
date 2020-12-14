@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import {redis} from "../../../redis";
 import {User} from "../../../entities/User";
 import {forgotPasswordPrefix} from "../../../constants/redis-prefixes";
-import {ChangePasswordInput} from "./ChangePasswordInput";
+import {ChangePasswordInput} from "../../../inputs/ChangePasswordInput";
 
 @Resolver()
 export class ChangePasswordResolver {

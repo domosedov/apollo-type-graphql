@@ -1,9 +1,10 @@
 import {Field, InputType} from "type-graphql";
-import {IsEmail, Length, MinLength} from "class-validator";
-import {IsEmailAlreadyExist} from "./isEmailAlreadyExist";
+import {IsEmail, Length} from "class-validator";
+import {IsEmailAlreadyExist} from "../resolvers/user/register/isEmailAlreadyExist";
+import {PasswordMixin} from "./PasswordMixin";
 
 @InputType()
-export class RegisterInput {
+export class RegisterInput extends PasswordMixin(class {}) {
 
     @Field()
     @Length(1, 255)
@@ -19,8 +20,4 @@ export class RegisterInput {
         message: "Этот email уже используется"
     })
     email: string
-
-    @Field()
-    @MinLength(1)
-    password: string
 }

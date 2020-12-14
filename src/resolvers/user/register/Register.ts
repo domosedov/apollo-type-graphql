@@ -2,7 +2,7 @@ import {Arg, Ctx, Mutation, Query, Resolver, UseMiddleware} from "type-graphql";
 import bcrypt from "bcryptjs";
 
 import {User} from "../../../entities/User";
-import {RegisterInput} from "./RegisterInput";
+import {RegisterInput} from "../../../inputs/RegisterInput";
 import {isAuth} from "../../../middlewares/isAuth";
 import {createConfirmationUrl} from "../../../utils/createConfirmationUrl";
 import {sendEmail} from "../../../utils/sendEmail";
