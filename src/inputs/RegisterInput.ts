@@ -1,6 +1,6 @@
 import {Field, InputType} from "type-graphql";
 import {IsEmail, Length} from "class-validator";
-import {IsEmailAlreadyExist} from "../resolvers/user/register/isEmailAlreadyExist";
+import {IsEmailAlreadyExist} from "../validators/isEmailAlreadyExist";
 import {PasswordMixin} from "./PasswordMixin";
 
 @InputType()
