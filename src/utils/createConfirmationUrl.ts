@@ -1,10 +1,12 @@
 import {v4 as uuid} from 'uuid'
 import {redis} from "../redis";
+import {confirmUserPrefix} from "../constants/redis-prefixes";
 
-export const createConfirmationUrl = (userId: number) => {
-    const id = uuid();
+export const createConfirmationUrl = async (userId: number) => {
 
-    redis.set(id, userId, "ex", 60*60*24) // 1 day expiration
+    const token = uuid();
 
-    return id;
+    await redis.set(confirmUserPrefix + token, userId, "ex", 60 * 60 * 24) // 1 day expiration
+
+    return `http://localhost:3000/user/confirm/${token}`;
 }
