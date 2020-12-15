@@ -38,7 +38,7 @@ const main = async () => {
 
     app.use(cors({
         credentials: true,
-        origin: process.env.CORS_ORIGIN
+        origin: "*"
     }))
 
     const sessionOption: session.SessionOptions = {
@@ -72,7 +72,8 @@ const main = async () => {
         schema,
         context: ({req, res}) => ({req, res, redis}),
         introspection: true,
-        uploads: false
+        uploads: false,
+        playground: true
     });
 
     apolloServer.applyMiddleware({app, cors: false});
