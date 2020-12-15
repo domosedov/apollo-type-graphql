@@ -8,6 +8,8 @@ import cors from "cors"
 
 import {redis} from "./redis";
 import {createSchema} from "./utils/createSchema";
+import {graphqlUploadExpress} from "graphql-upload";
+import path from "path";
 
 const main = async () => {
     await createConnection();
@@ -16,11 +18,15 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema,
-        context: ({req, res}) => ({req, res})
+        context: ({req, res}) => ({req, res}),
+        introspection: true,
+        uploads: false
     });
 
     const app = express();
     const RedisStore = connectRedis(session);
+
+    app.use(express.static(path.join(__dirname, 'public')));
 
     app.use(cors({
         credentials: true,
@@ -44,11 +50,18 @@ const main = async () => {
 
     app.use(session(sessionOption));
 
+    app.use(graphqlUploadExpress({
+        maxFiles: 5,
+        maxFileSize: 10000000
+    }))
+
     apolloServer.applyMiddleware({app});
 
     app.listen(8080, () => {
         console.log("server started on http://localhost:8080/graphql");
     });
+
+    console.log(path.join(__dirname, 'public', 'uploads'))
 };
 
 main().catch(err => console.error(err));

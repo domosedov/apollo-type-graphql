@@ -16,6 +16,11 @@ export class RegisterResolver {
         return "Hello World!";
     }
 
+    @Query(() => String)
+    async helloWorld() {
+        return "Hello World!";
+    }
+
     @Mutation(() => User)
     async register(
         @Ctx() ctx: MyContext,
