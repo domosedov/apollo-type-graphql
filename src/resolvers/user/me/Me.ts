@@ -14,7 +14,7 @@ export class MeResolver {
             return undefined;
         }
 
-        const id = ctx.req.session!.userId;
+        const id = ctx.req.session.userId;
 
         return await User.findOne({where: {id}});
     }

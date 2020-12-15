@@ -35,7 +35,7 @@ export class RegisterResolver {
             password: hashedPassword,
         }).save();
 
-        await sendEmail(email, await createConfirmationUrl(user.id));
+        await sendEmail(email, await createConfirmationUrl(user.id, ctx.redis));
 
         ctx.req.session.userId = user.id;
 

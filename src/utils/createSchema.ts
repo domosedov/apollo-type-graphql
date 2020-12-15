@@ -5,5 +5,6 @@ export const createSchema = () => buildSchema({
     resolvers,
     authChecker: ({context: {req}}) => {
         return !!req.session!.userId;
-    }
+    },
+    validate: false
 })
