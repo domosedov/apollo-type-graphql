@@ -58,7 +58,8 @@ const main = async () => {
         },
         secret: process.env.SESSION_SECRET || '',
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        proxy: __prod__
     };
 
     app.use(session(sessionOption));
@@ -75,6 +76,15 @@ const main = async () => {
         uploads: false,
         playground: true
     });
+
+    app.get('/', (req, res) => {
+        res.cookie('foo', 'bar', {
+            httpOnly: true,
+            domain: ".domosedov-dev.info",
+            maxAge: 100000000
+        })
+        res.json({message: "ok"})
+    })
 
     apolloServer.applyMiddleware({app, cors: false});
 
