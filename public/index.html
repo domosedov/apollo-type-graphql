@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hello</h1>
+</body>
+
+<script>
+
+    (async () => {
+        const response = await fetch('/graphql', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                query: `
+                    mutation {
+                        login(password: "1992", email: "sonya2@mail.com") {
+                            name
+                            id
+                        }
+                    }
+                `
+            })
+        })
+
+        console.log(await response.json())
+    })()
+
+</script>
+
+
+</html>

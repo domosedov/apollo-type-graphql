@@ -30,7 +30,7 @@ const main = async () => {
     const port = process.env.PORT;
     const schema = await createSchema();
 
-    if (app.get('env') === 'production') {
+    if (__prod__) {
         app.set("trust proxy", 1);
     }
 
@@ -41,28 +41,25 @@ const main = async () => {
         origin: "*"
     }))
 
-    const sessionOption: session.SessionOptions = {
-        name: COOKIE_NAME,
-        store: new RedisStore({
-            client: redis,
-            disableTouch: true,
-            host: "localhost",
-            port: 6379
-        }),
-        cookie: {
-            httpOnly: true,
-            secure: __prod__,
-            domain: __prod__ ? "domosedov-dev.info" : undefined,
-            sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
-        },
-        secret: process.env.SESSION_SECRET || '',
-        resave: false,
-        saveUninitialized: false,
-        proxy: __prod__
-    };
-
-    app.use(session(sessionOption));
+    app.use(session(
+        {
+            name: COOKIE_NAME,
+            store: new RedisStore({
+                client: redis,
+                disableTouch: true,
+            }),
+            cookie: {
+                httpOnly: true,
+                secure: __prod__,
+                domain: __prod__ ? "domosedov-dev.info" : undefined,
+                sameSite: "lax",
+                maxAge: 1000 * 60 * 60 * 24,
+            },
+            secret: process.env.SESSION_SECRET,
+            resave: false,
+            saveUninitialized: false,
+        }
+    ));
 
     app.use(graphqlUploadExpress({
         maxFiles: 5,
@@ -72,18 +69,17 @@ const main = async () => {
     const apolloServer = new ApolloServer({
         schema,
         context: ({req, res}) => ({req, res, redis}),
-        introspection: true,
+        introspection: !__prod__,
         uploads: false,
-        playground: true
     });
 
-    app.get('/', (req, res) => {
+    app.get('/', (_, res) => {
         res.cookie('foo', 'bar', {
             httpOnly: true,
             domain: ".domosedov-dev.info",
             maxAge: 100000000
         })
-        res.json({message: "ok"})
+        res.sendFile(path.join(process.cwd(), 'public', 'index.html'))
     })
 
     apolloServer.applyMiddleware({app, cors: false});
@@ -92,13 +88,17 @@ const main = async () => {
         console.log(`server started on http://localhost:${port}/graphql`);
     });
 
-    console.log(path.join(__dirname, 'public', 'uploads'))
-    console.dir(process.env.NODE_ENV)
+    // console.log(path.join(__dirname, 'public', 'uploads'))
+    // console.dir(process.env.NODE_ENV)
+    // console.log(__prod__)
+    // console.log(process.env.CORS_ORIGIN)
+    // console.log(process.env.SESSION_SECRET)
+    // console.log(process.env.REDIS_URL)
+    // console.log(app.get('env'))
+
+
     console.log(__prod__)
-    console.log(process.env.CORS_ORIGIN)
-    console.log(process.env.SESSION_SECRET)
-    console.log(process.env.REDIS_URL)
-    console.log(app.get('env'))
+
 };
 
 main().catch(err => console.error(err));
