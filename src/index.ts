@@ -88,15 +88,6 @@ const main = async () => {
         console.log(`server started on http://localhost:${port}/graphql`);
     });
 
-    // console.log(path.join(__dirname, 'public', 'uploads'))
-    // console.dir(process.env.NODE_ENV)
-    // console.log(__prod__)
-    // console.log(process.env.CORS_ORIGIN)
-    // console.log(process.env.SESSION_SECRET)
-    // console.log(process.env.REDIS_URL)
-    // console.log(app.get('env'))
-
-
     console.log(__prod__)
 
 };
