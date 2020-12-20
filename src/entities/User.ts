@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
 import {ObjectType, Field, ID, Root} from "type-graphql";
+import { Todo } from "./Todo";
 
 @ObjectType()
 @Entity()
@@ -30,4 +31,10 @@ export class User extends BaseEntity {
 
   @Column("bool", {default: false})
   confirmed: boolean;
+
+  @Field(() => [Todo])
+  @OneToMany(() => Todo, todo => todo.user, {
+    eager: true
+  })
+  todos: Todo[]
 }

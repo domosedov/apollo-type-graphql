@@ -13,6 +13,7 @@ import path from "path";
 import {User} from "./entities/User";
 import {__prod__, COOKIE_NAME} from "./constants";
 import Redis from "ioredis";
+import { Todo } from "./entities/Todo";
 
 const main = async () => {
     await createConnection({
@@ -21,8 +22,64 @@ const main = async () => {
         url: process.env.DATABASE_URL,
         synchronize: true,
         logging: false,
-        entities: [User]
+        dropSchema: true,
+        entities: [User, Todo]
     });
+
+    const user1 = await User.create({
+        firstName: "Alex",
+        lastName: "Grig",
+        email: "domosed0",
+        password: "2001"
+    }).save()
+
+    const user2 = await User.create({
+      firstName: "Sonya",
+      lastName: "Grig",
+      email: "domosed1",
+      password: "2001",
+    }).save();
+
+    const user3 = await User.create({
+      firstName: "Vlad",
+      lastName: "Grig",
+      email: "domosed2",
+      password: "2001",
+    }).save();
+
+    console.log(user1)
+
+    await Todo.create({
+        title: 'todo 1',
+        description: 'desc 1',
+        user: {
+            id: 1
+        }
+    }).save();
+
+    await Todo.create({
+      title: "todo 2",
+      description: "desc 1",
+      user: {
+        id: 1,
+      },
+    }).save();
+
+    await Todo.create({
+      title: "todo 3",
+      description: "desc 1",
+      user: {
+        id: 2,
+      },
+    }).save();
+
+    await Todo.create({
+      title: "todo 4",
+      description: "desc 1",
+      user: {
+        id: 3,
+      },
+    }).save();
 
     const app = express();
     const RedisStore = connectRedis(session);
@@ -87,8 +144,6 @@ const main = async () => {
     app.listen(parseInt(port), () => {
         console.log(`server started on http://localhost:${port}/graphql`);
     });
-
-    console.log(__prod__)
 
 };
 
